@@ -1,0 +1,38 @@
+name: lode2
+
+services:
+  user-service:
+    build:
+      context: ..
+      dockerfile: deployments/Dockerfile.dev
+      args:
+        SERVICE_NAME: user-service
+    command: go run services/user-service/cmd/main.go
+    environment:
+      CONFIG_PATH: services/user-service/config/local.yaml
+      GO_ENV: development
+    volumes:
+      - ..:/app
+    depends_on:
+      user-db:
+        condition: service_healthy
+    ports:
+      - 5100:8080
+    networks:
+      - backend
+  user-db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: user_service
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: users
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d users -U user_service"]
+      start_period: 3s
+      start_interval: 1s
+    ports:
+      - 5000:5432
+    networks:
+      - backend
+networks:
+  backend:

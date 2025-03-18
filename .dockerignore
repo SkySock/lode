@@ -1,0 +1,9 @@
+**/.vscode
+**/.git
+**/.github/
+**/docs/
+**/tmp/
+**/.idea/
+**/vendor/
+**/bin/
+**/.env

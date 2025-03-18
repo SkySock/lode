@@ -1,4 +1,0 @@
-env: local
-grpc:
-  port: 56565
-  timeout: 1h

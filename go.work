@@ -1,7 +1,7 @@
-go 1.23.4
+go 1.24.1
 
 use (
-	./libs/protos
+	./libs/share-dto
 	./libs/utils
-	./services/sso
+	./services/user-service
 )

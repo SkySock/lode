@@ -1,0 +1,17 @@
+CREATE TABLE account (
+    "id" uuid PRIMARY KEY,
+    "username" varchar(50) NOT NULL UNIQUE,
+    "email" varchar(254) NOT NULL UNIQUE,
+    "password_hash" varchar(255),
+    "created_at" timestamp NOT NULL DEFAULT (now())
+);
+
+CREATE TABLE profile (
+    "id" uuid PRIMARY KEY,
+    "user_id" uuid NOT NULL REFERENCES account,
+    "profile_name" varchar NOT NULL UNIQUE,
+    "display_name" varchar NOT NULL,
+    "bio" text NOT NULL,
+    "avatar" varchar,
+    "joined_at" timestamp NOT NULL DEFAULT (now())
+);

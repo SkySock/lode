@@ -1,0 +1,7 @@
+env: dev
+http:
+  host: 0.0.0.0
+  port: 8080
+db:
+  url: postgres://user_service:password@user-db:5432/users?sslmode=disable
+  migrate: true
