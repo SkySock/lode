@@ -18,7 +18,7 @@ require (
 
 require (
 	github.com/BurntSushi/toml v1.4.0 // indirect
-	github.com/SkySock/lode/libs/share-dto v0.0.0
+	github.com/SkySock/lode/libs/shared-dto v0.0.0
 	github.com/SkySock/lode/libs/utils v0.0.0-00010101000000-000000000000
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
@@ -36,4 +36,4 @@ require (
 
 replace github.com/SkySock/lode/libs/utils => ../../libs/utils
 
-replace github.com/SkySock/lode/libs/share-dto => ../../libs/share-dto
+replace github.com/SkySock/lode/libs/shared-dto => ../../libs/shared-dto

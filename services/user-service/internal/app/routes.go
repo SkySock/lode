@@ -21,7 +21,8 @@ func newRouter(log *slog.Logger, controllers controllers) *mux.Router {
 	apiV1.Handle("/sign-in", controllers.SignIn).Methods("POST")
 	apiV1.Handle("/sign-up", controllers.SignUp).Methods("POST")
 
-	r.Use(middleware.ErrorMiddleware(log))
+	r.Use(middleware.Logging(log))
+	r.Use(middleware.Error(log))
 
 	return r
 }

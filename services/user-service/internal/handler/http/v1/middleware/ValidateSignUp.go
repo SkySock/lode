@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	v1 "github.com/SkySock/libs/share-dto/user/http/v1"
+	v1 "github.com/SkySock/libs/shared-dto/user/http/v1"
 )
 
 type KeySignUp struct{}

@@ -9,7 +9,7 @@ import (
 
 	"github.com/SkySock/lode/services/user-service/internal/usecase"
 
-	v1 "github.com/SkySock/lode/libs/share-dto/user/http/v1"
+	v1 "github.com/SkySock/lode/libs/shared-dto/user/http/v1"
 	"github.com/google/uuid"
 )
 

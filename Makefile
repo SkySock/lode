@@ -1,7 +1,7 @@
 .PHONY: build-all
 
 SERVICES = user-service
-LIBRARIES = utils
+LIBRARIES = utils shared-dto
 
 
 test-libs:

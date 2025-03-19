@@ -1,4 +1,4 @@
-module github.com/SkySock/libs/share-dto
+module github.com/SkySock/libs/shared-dto
 
 go 1.24.1
 
