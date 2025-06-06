@@ -5,6 +5,8 @@ http:
 db:
   url: postgres://user_service:password@user-db:5432/users?sslmode=disable
   migrate: true
+valkey:
+  addr: user-valkey:6379
 auth:
   access_secret: super-secret-access-key
   lifetime:

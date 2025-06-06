@@ -34,7 +34,7 @@ func Run(cfg *config.Config) {
 	pool := db.InitPool(ctx, cfg.DB, log)
 	defer db.ClosePool(pool)
 
-	client, err := valkey.NewClient(valkey.ClientOption{InitAddress: []string{"user-valkey:6379"}})
+	client, err := valkey.NewClient(valkey.ClientOption{InitAddress: []string{cfg.Valkey.Addr}})
 	if err != nil {
 		panic(err)
 	}

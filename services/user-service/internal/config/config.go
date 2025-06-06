@@ -9,10 +9,11 @@ import (
 )
 
 type Config struct {
-	Env  string     `yaml:"env" env-default:"local"`
-	HTTP HTTPConfig `yaml:"http"`
-	DB   DBConfig   `yaml:"db"`
-	Auth AuthConfig `yaml:"auth"`
+	Env    string       `yaml:"env" env-default:"local"`
+	HTTP   HTTPConfig   `yaml:"http"`
+	DB     DBConfig     `yaml:"db"`
+	Valkey ValkeyConfig `yaml:"valkey"`
+	Auth   AuthConfig   `yaml:"auth"`
 }
 
 type HTTPConfig struct {
@@ -23,6 +24,10 @@ type HTTPConfig struct {
 type DBConfig struct {
 	URL     string `yaml:"url"`
 	Migrate bool   `yaml:"migrate" env-default:"false"`
+}
+
+type ValkeyConfig struct {
+	Addr string `yaml:"addr" env-default:"127.0.0.1:6379"`
 }
 
 type AuthConfig struct {
