@@ -13,5 +13,5 @@ CREATE TABLE profile (
     "display_name" varchar NOT NULL,
     "bio" text NOT NULL,
     "avatar" varchar,
-    "joined_at" timestamp NOT NULL DEFAULT (now())
+    "created_at" timestamp NOT NULL DEFAULT (now())
 );

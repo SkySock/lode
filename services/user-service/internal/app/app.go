@@ -13,9 +13,10 @@ import (
 
 	"github.com/SkySock/lode/services/user-service/internal/config"
 	"github.com/SkySock/lode/services/user-service/internal/db"
-	v1 "github.com/SkySock/lode/services/user-service/internal/handler/http/v1"
+	v1Auth "github.com/SkySock/lode/services/user-service/internal/handler/http/v1/auth"
 	"github.com/SkySock/lode/services/user-service/internal/repository"
 	"github.com/SkySock/lode/services/user-service/internal/usecase"
+	"github.com/valkey-io/valkey-go"
 )
 
 const (
@@ -29,16 +30,26 @@ func Run(cfg *config.Config) {
 
 	log.Info("starting application", slog.String("env", cfg.Env))
 
-	pool := db.InitPool(context.Background(), cfg.DB, log)
+	ctx := context.Background()
+	pool := db.InitPool(ctx, cfg.DB, log)
 	defer db.ClosePool(pool)
 
-	accountRepository := repository.NewAccountRepository(pool)
+	client, err := valkey.NewClient(valkey.ClientOption{InitAddress: []string{"user-valkey:6379"}})
+	if err != nil {
+		panic(err)
+	}
+	defer client.Close()
 
-	userUsecase := usecase.NewUserUsecase(accountRepository)
+	sessionRepo := repository.NewSessionRepository(client)
+	accountRepo := repository.NewAccountRepository()
+	profileRepo := repository.NewProfileRepository()
+
+	authUsecase := usecase.NewAuthUsecase(pool, accountRepo, sessionRepo, profileRepo, cfg.Auth)
 
 	controllers := controllers{
-		SignUp: v1.NewSignUp(log, userUsecase),
-		SignIn: v1.NewSignIn(log, userUsecase),
+		SignUp:  v1Auth.NewSignUp(log, authUsecase),
+		SignIn:  v1Auth.NewSignIn(log, authUsecase),
+		SignOut: v1Auth.NewSignOut(log, authUsecase),
 	}
 
 	r := newRouter(log, controllers)

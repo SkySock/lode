@@ -16,7 +16,7 @@ type SignUpRequest struct {
 }
 
 type SignInRequest struct {
-	Email    string `json:"email" validate:"required"`
+	Login    string `json:"login" validate:"required"`
 	Password string `json:"password" validate:"required"`
 }
 
@@ -29,6 +29,25 @@ func (s *SignUpRequest) Validate() error {
 	validator := validator.New()
 	validator.RegisterValidation("password", validatePassword)
 
+	return validator.Struct(s)
+}
+
+func (s *SignUpRequest) Normalize() {
+	s.Username = strings.ToLower(s.Username)
+	s.Email = strings.ToLower(s.Email)
+}
+
+func (s *SignInRequest) Normalize() {
+	s.Login = strings.ToLower(s.Login)
+}
+
+func (s *SignInRequest) FromJSON(r io.Reader) error {
+	d := json.NewDecoder(r)
+	return d.Decode(s)
+}
+
+func (s *SignInRequest) Validate() error {
+	validator := validator.New()
 	return validator.Struct(s)
 }
 

@@ -1,4 +1,4 @@
-package v1
+package auth
 
 import (
 	"context"
@@ -10,25 +10,32 @@ import (
 	"github.com/SkySock/lode/services/user-service/internal/usecase"
 
 	v1 "github.com/SkySock/lode/libs/shared-dto/user/http/v1"
+	"github.com/SkySock/lode/libs/utils/http/response"
 	"github.com/google/uuid"
 )
 
-type userUsecase interface {
+type registerUsecase interface {
 	RegisterUser(ctx context.Context, userInfo usecase.RegistrationInfo) (uuid.UUID, error)
 }
 
 type SignUp struct {
-	l           *slog.Logger
-	userUsecase userUsecase
+	l  *slog.Logger
+	uc registerUsecase
 }
 
-func NewSignUp(l *slog.Logger, userUsecase userUsecase) *SignUp {
-	return &SignUp{l, userUsecase}
+func NewSignUp(l *slog.Logger, uc registerUsecase) *SignUp {
+	return &SignUp{l, uc}
 }
 
 var _ http.Handler = (*SignUp)(nil)
 
-func (s *SignUp) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *SignUp) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		h.l.Warn("invalid request method", "method", r.Method)
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
 	data := v1.SignUpRequest{}
 
 	err := data.FromJSON(r.Body)
@@ -36,6 +43,7 @@ func (s *SignUp) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Error input data", http.StatusBadRequest)
 		return
 	}
+	data.Normalize()
 
 	err = data.Validate()
 	if err != nil {
@@ -49,10 +57,10 @@ func (s *SignUp) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Password: data.Password,
 	}
 
-	userId, err := s.userUsecase.RegisterUser(r.Context(), newUser)
+	userId, err := h.uc.RegisterUser(r.Context(), newUser)
 	if err != nil {
 		if errors.Is(err, usecase.ErrEmailOrUsernameAlreadyExists) {
-			http.Error(w, "Username or email already exists", http.StatusBadRequest)
+			http.Error(w, "Username or email already exists", http.StatusConflict)
 			return
 		}
 		http.Error(w, "Error", http.StatusInternalServerError)
@@ -62,8 +70,9 @@ func (s *SignUp) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	resp := &v1.SignUpResponse{
 		UserId: userId.String(),
 	}
-	err = resp.ToJSON(w)
-	if err != nil {
+
+	if err := response.WriteJSON(w, http.StatusCreated, resp); err != nil {
+		h.l.Error("JSON encoding failed", "error", err)
 		http.Error(w, "Unable encode json", http.StatusInternalServerError)
 		return
 	}

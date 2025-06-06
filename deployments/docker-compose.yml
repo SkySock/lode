@@ -16,10 +16,27 @@ services:
     depends_on:
       user-db:
         condition: service_healthy
+      user-valkey:
+        condition: service_healthy
     ports:
       - 5100:8080
     networks:
       - backend
+  user-valkey:
+    image: valkey/valkey:8.1-alpine
+    ports:
+      - "5050:6379"
+    volumes:
+      - valkey-data:/data
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    command: ["valkey-server", "--appendonly", "yes"]
+    networks:
+      - backend
+    
   user-db:
     image: postgres:17-alpine
     environment:
@@ -28,11 +45,14 @@ services:
       POSTGRES_DB: users
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d users -U user_service"]
-      start_period: 3s
-      start_interval: 1s
+      interval: 5s
+      timeout: 3s
+      retries: 5
     ports:
       - 5000:5432
     networks:
       - backend
 networks:
   backend:
+volumes:
+  valkey-data:

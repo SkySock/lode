@@ -5,3 +5,8 @@ http:
 db:
   url: postgres://user_service:password@user-db:5432/users?sslmode=disable
   migrate: true
+auth:
+  access_secret: super-secret-access-key
+  lifetime:
+    access: 10m
+    refresh: 720h

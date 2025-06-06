@@ -3,6 +3,7 @@ package config
 import (
 	"flag"
 	"os"
+	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
 )
@@ -11,6 +12,7 @@ type Config struct {
 	Env  string     `yaml:"env" env-default:"local"`
 	HTTP HTTPConfig `yaml:"http"`
 	DB   DBConfig   `yaml:"db"`
+	Auth AuthConfig `yaml:"auth"`
 }
 
 type HTTPConfig struct {
@@ -21,6 +23,16 @@ type HTTPConfig struct {
 type DBConfig struct {
 	URL     string `yaml:"url"`
 	Migrate bool   `yaml:"migrate" env-default:"false"`
+}
+
+type AuthConfig struct {
+	AccessSecretKey string        `yaml:"access_secret"`
+	Lifetime        TokenLifetime `yaml:"lifetime"`
+}
+
+type TokenLifetime struct {
+	Access  time.Duration `yaml:"access" env-default:"5m"`
+	Refresh time.Duration `yaml:"refresh" env-default:"720h"`
 }
 
 func MustLoad() *Config {
