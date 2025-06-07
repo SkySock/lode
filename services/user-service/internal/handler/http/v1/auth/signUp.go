@@ -2,12 +2,14 @@ package auth
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
 
 	"github.com/SkySock/lode/services/user-service/internal/usecase"
+	"github.com/SkySock/lode/services/user-service/internal/validation"
 
 	v1 "github.com/SkySock/lode/libs/shared-dto/user/http/v1"
 	"github.com/SkySock/lode/libs/utils/http/response"
@@ -38,14 +40,14 @@ func (h *SignUp) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	data := v1.SignUpRequest{}
 
-	err := data.FromJSON(r.Body)
+	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
 		http.Error(w, "Error input data", http.StatusBadRequest)
 		return
 	}
 	data.Normalize()
 
-	err = data.Validate()
+	err = validation.ValidateSignUpRequest(&data)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error validating data: %s", err), http.StatusBadRequest)
 		return

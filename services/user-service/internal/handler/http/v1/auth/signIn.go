@@ -2,14 +2,16 @@ package auth
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
 
-	v1 "github.com/SkySock/libs/shared-dto/user/http/v1"
+	v1 "github.com/SkySock/lode/libs/shared-dto/user/http/v1"
 	"github.com/SkySock/lode/libs/utils/http/response"
 	"github.com/SkySock/lode/services/user-service/internal/usecase"
+	"github.com/SkySock/lode/services/user-service/internal/validation"
 )
 
 type SignIn struct {
@@ -36,14 +38,14 @@ func (h *SignIn) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	data := v1.SignInRequest{}
 
-	if err := data.FromJSON(r.Body); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
 		http.Error(w, "Error input data", http.StatusBadRequest)
 		return
 	}
 
 	data.Normalize()
 
-	if err := data.Validate(); err != nil {
+	if err := validation.ValidateSignInRequest(&data); err != nil {
 		http.Error(w, fmt.Sprintf("Error validating data: %s", err), http.StatusBadRequest)
 		return
 	}
