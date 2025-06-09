@@ -1,6 +1,24 @@
 name: lode2
 
 services:
+  api-gateway:
+    build:
+      context: ..
+      dockerfile: deployments/Dockerfile.dev
+      args:
+        SERVICE_NAME: api-gateway
+    command: go run services/api-gateway/cmd/main.go
+    environment:
+      CONFIG_PATH: services/user-service/config/local.yaml
+      GO_ENV: development
+    volumes:
+      - ..:/app
+    ports:
+      - 8000:8080
+    depends_on:
+      - user-service
+    networks:
+      - backend
   user-service:
     build:
       context: ..

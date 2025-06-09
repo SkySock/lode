@@ -6,14 +6,15 @@ ARG SERVICE_DIR=services/${SERVICE_NAME}
 ARG MAIN_FILE=${SERVICE_DIR}/cmd/main.go
 ARG CONFIG_PATH
 
-
 WORKDIR /app
 
+RUN go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+
 COPY go.work go.work.sum ./
-COPY ${SERVICE_DIR}/go.mod ${SERVICE_DIR}/go.sum ${SERVICE_DIR}/
+COPY --parents services/./*/go.mod services/./*/go.sum ./services/
 COPY --parents libs/./*/go.mod libs/./*/go.sum ./libs/
 
-RUN go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+
 RUN cd ${SERVICE_DIR} && go mod download
 WORKDIR /app
 

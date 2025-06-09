@@ -1,3 +1,3 @@
-module github.com/SkySock/libs/shared-dto
+module github.com/SkySock/lode/libs/shared-dto
 
-go 1.24.1
+go 1.24.3
