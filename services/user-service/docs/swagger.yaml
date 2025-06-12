@@ -1,0 +1,113 @@
+definitions:
+  github_com_SkySock_lode_libs_shared-dto_user_http_v1.SignInRequest:
+    properties:
+      login:
+        example: ozon671games
+        type: string
+      password:
+        example: Da1dfshgn$
+        type: string
+    required:
+    - login
+    - password
+    type: object
+  github_com_SkySock_lode_libs_shared-dto_user_http_v1.SignInResponse:
+    properties:
+      accessToken:
+        type: string
+    type: object
+  github_com_SkySock_lode_libs_shared-dto_user_http_v1.SignUpRequest:
+    properties:
+      email:
+        example: example@example.com
+        type: string
+      password:
+        example: Da1dfshgn$
+        type: string
+      username:
+        example: ozon671games
+        maxLength: 50
+        minLength: 1
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  github_com_SkySock_lode_libs_shared-dto_user_http_v1.SignUpResponse:
+    properties:
+      userId:
+        example: 01976451-00b3-7e32-9340-4f999c6c5edd
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Вход в аккаунт пользователя
+      parameters:
+      - description: Данные регистрации
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_SkySock_lode_libs_shared-dto_user_http_v1.SignInRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_SkySock_lode_libs_shared-dto_user_http_v1.SignInResponse'
+      summary: Вход в аккаунт
+      tags:
+      - Auth
+  /auth/sign-out:
+    post:
+      consumes:
+      - application/json
+      description: Делает недействительным refresh токен и удаляет файл cookie refreshToken
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully logged out
+          schema:
+            type: string
+        "400":
+          description: Missing or empty refreshToken cookie
+          schema:
+            type: string
+        "500":
+          description: Failed to logout
+          schema:
+            type: string
+      summary: Выход из системы
+      tags:
+      - Auth
+  /auth/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: Создание нового аккаунта
+      parameters:
+      - description: Данные регистрации
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_SkySock_lode_libs_shared-dto_user_http_v1.SignUpRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_SkySock_lode_libs_shared-dto_user_http_v1.SignUpResponse'
+      summary: Регистрация пользователя
+      tags:
+      - Auth
+swagger: "2.0"

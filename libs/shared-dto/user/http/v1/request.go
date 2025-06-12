@@ -5,14 +5,14 @@ import (
 )
 
 type SignUpRequest struct {
-	Username string `json:"username" validate:"required,alphanum,gte=1,lte=50"`
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required,password"`
+	Username string `json:"username" example:"ozon671games" validate:"required,alphanum,gte=1,lte=50"`
+	Email    string `json:"email" example:"example@example.com" validate:"required,email"`
+	Password string `json:"password" example:"Da1dfshgn$" validate:"required,password"`
 }
 
 type SignInRequest struct {
-	Login    string `json:"login" validate:"required"`
-	Password string `json:"password" validate:"required"`
+	Login    string `json:"login" example:"ozon671games" validate:"required"`
+	Password string `json:"password" example:"Da1dfshgn$" validate:"required"`
 }
 
 func (s *SignUpRequest) Normalize() {

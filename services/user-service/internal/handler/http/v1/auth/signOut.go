@@ -22,6 +22,16 @@ func NewSignOut(l *slog.Logger, uc logoutUsecase) *SignOut {
 
 var _ http.Handler = (*SignOut)(nil)
 
+// SignOut godoc
+// @Summary      Выход из системы
+// @Description  Делает недействительным refresh токен и удаляет файл cookie refreshToken
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Success      200 {string} string "Successfully logged out"
+// @Failure      400 {string} string "Missing or empty refreshToken cookie"
+// @Failure      500 {string} string "Failed to logout"
+// @Router       /auth/sign-out [post]
 func (h *SignOut) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		h.l.Warn("invalid request method", "method", r.Method)

@@ -104,3 +104,41 @@ func (r *profileRepository) GetByProfileName(ctx context.Context, qe db.QueryExe
 
 	return &profile, nil
 }
+
+func (r *profileRepository) GetAllByUserID(ctx context.Context, qe db.QueryExecutor, userID uuid.UUID) ([]*entity.Profile, error) {
+	query := `
+		SELECT id, user_id, profile_name, display_name, bio, avatar, created_at
+			FROM profile
+			WHERE user_id = $1
+	`
+	rows, err := qe.Query(ctx, query, userID)
+	if err != nil {
+		return nil, fmt.Errorf("repo: query execution failed: %w", err)
+	}
+	defer rows.Close()
+
+	var profiles []*entity.Profile
+	for rows.Next() {
+		profile := new(entity.Profile)
+
+		if err := rows.Scan(
+			&profile.ID,
+			&profile.UserID,
+			&profile.ProfileName,
+			&profile.DisplayName,
+			&profile.Bio,
+			&profile.Avatar,
+			&profile.CreatedAt,
+		); err != nil {
+			return nil, fmt.Errorf("repo: scan failed for user %s: %w", userID, err)
+		}
+
+		profiles = append(profiles, profile)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("repo: rows iteration error: %w", err)
+	}
+
+	return profiles, nil
+}

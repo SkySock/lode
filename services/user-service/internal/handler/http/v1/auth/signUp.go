@@ -31,6 +31,15 @@ func NewSignUp(l *slog.Logger, uc registerUsecase) *SignUp {
 
 var _ http.Handler = (*SignUp)(nil)
 
+// SignUp godoc
+// @Summary      Регистрация пользователя
+// @Description  Создание нового аккаунта
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        request body v1.SignUpRequest true "Данные регистрации"
+// @Success      201  {object}  v1.SignUpResponse
+// @Router       /auth/sign-up [post]
 func (h *SignUp) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		h.l.Warn("invalid request method", "method", r.Method)

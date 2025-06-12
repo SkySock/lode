@@ -12,6 +12,8 @@ type AuthUsecase interface {
 	Logout(ctx context.Context, refreshToken string) error
 }
 
+type ProfileUsecase interface{}
+
 type RegistrationInfo struct {
 	Username string
 	Email    string

@@ -9,3 +9,9 @@ test-libs:
 		echo "Testing library: $$lib"; \
 		go test -cover ./libs/$$lib/...; \
 	done
+
+gen-swagger:
+	@for service in $(SERVICES); do \
+		echo "Generate swagger: $$service"; \
+		swag init -g ./services/$$service/cmd/main.go -o ./services/$$service/docs --parseDependency --parseInternal; \
+	done
